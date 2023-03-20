@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from api.v1 import router as v1_router
+from api.handlers import error_handler
 
 
 router = APIRouter()

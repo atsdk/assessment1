@@ -1,30 +1,44 @@
-from typing import Callable
+from typing import List, Optional
 
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette import status
+from starlette.types import ASGIApp
+from starlette.requests import Request
+from starlette.middleware.base import (
+    BaseHTTPMiddleware,
+    RequestResponseEndpoint,
+)
+from starlette.responses import JSONResponse, Response
 
 from core.settings import settings
 
 
 class AuthenticationMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app: FastAPI):
+    def __init__(
+        self, app: ASGIApp, route_prefixes: Optional[List[str]] = None
+    ) -> None:
         super().__init__(app)
+        self.route_prefixes = route_prefixes or []
 
-    # TODO: add return type
-    async def dispatch(self, request: Request, call_next: Callable):
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
+        scope = request.scope
+
+        if not any(
+            scope["path"].startswith(prefix) for prefix in self.route_prefixes
+        ):
+            return await call_next(request)
+
         authorization: str = request.headers.get("Authorization")
         if authorization:
-            try:
-                scheme, credentials = authorization.split(" ")
-                if scheme.lower() == "bearer":
-                    if (
-                        settings.DEFAULT_AUTH_TOKEN
-                        and credentials == settings.DEFAULT_AUTH_TOKEN
-                    ):
-                        return await call_next(request)
-            except Exception as e:
-                print(e)
-                # logging
+            scheme, credentials = authorization.split(" ")
+            if scheme.lower() == "bearer":
+                if (
+                    settings.auth_token
+                    and credentials == settings.auth_token
+                ):
+                    return await call_next(request)
 
-        return JSONResponse({"error": "Unauthenticated"}, status_code=401)
+        return JSONResponse(
+            {"error": "Unauthenticated"}, status.HTTP_401_UNAUTHORIZED
+        )

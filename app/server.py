@@ -1,11 +1,12 @@
-from typing import List
+from typing import Dict, Callable, List
 
 from fastapi import FastAPI
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import router
+from api import error_handler, router
 from core.middlewares import AuthenticationMiddleware
+from core.exceptions import CoreException
 
 
 def make_middleware() -> List[Middleware]:
@@ -18,10 +19,18 @@ def make_middleware() -> List[Middleware]:
             allow_methods=["*"],
             allow_headers=["*"],
         ),
-        # Custom middleware we use for Authentication for all of app routes
-        Middleware(AuthenticationMiddleware),
+        Middleware(
+            AuthenticationMiddleware,
+            route_prefixes=["/api"],
+        )
     ]
     return middleware
+
+
+def make_exception_handlers() -> Dict[Exception, Callable]:
+    return {
+        CoreException: error_handler,
+    }
 
 
 def create_app() -> FastAPI:
@@ -36,6 +45,7 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
         middleware=make_middleware(),
+        exception_handlers=make_exception_handlers(),
     )
     app_.include_router(router)
     return app_
