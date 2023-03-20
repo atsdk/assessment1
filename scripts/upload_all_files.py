@@ -23,7 +23,7 @@ def test_all_files_upload(folder):
         resp = requests.post(
             url=url, files=file, headers={"Authorization": token}
         )
-        print(f"File: {filename}. Response: {resp.status_code} {resp.content}")
+        print(f"Response: {resp.status_code} {resp.json()}\n")
 
 
 if __name__ == "__main__":
