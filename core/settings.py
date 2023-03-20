@@ -14,4 +14,7 @@ class Settings(BaseSettings):
     root_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+# TODO: Add logging configuration
+
+
 settings = Settings()

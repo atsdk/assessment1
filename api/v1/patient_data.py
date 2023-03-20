@@ -1,3 +1,4 @@
+import logging
 import shutil
 
 from fastapi import APIRouter, UploadFile
@@ -9,6 +10,7 @@ from core.exceptions.file import FileProcessingException
 from api.utils import get_data_file_destination, validate_file
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.post("/patient-data/")
@@ -22,6 +24,9 @@ def patient_data(file: UploadFile) -> JSONResponse:
         with open(destination_file_path, 'wb') as out_file:
             shutil.copyfileobj(file.file, out_file, settings.file_chunk_size)
     except Exception as e:
+        logger.error(
+            "File %s processing error: %s", file.filename, e, exc_info=True
+        )
         raise FileProcessingException from e
 
     return JSONResponse(
