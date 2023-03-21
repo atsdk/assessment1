@@ -1,4 +1,4 @@
-from core.exceptions.file import (
+from app.core.exceptions.file import (
     InvalidFileExtensionException,
     InvalidFilenameLengthException,
     InvalidFileSizeException,

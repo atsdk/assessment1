@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.v1.patient_data import router as patient_data_router
+from app.api.v1.patient_data import router as patient_data_router
 
 
 router = APIRouter()

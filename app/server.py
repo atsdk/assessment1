@@ -4,9 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import error_handler, router
-from core.middlewares import AuthenticationMiddleware
-from core.exceptions import CoreException
+from app.api import error_handler, router
+from app.core.middlewares import AuthenticationMiddleware
+from app.core.exceptions import CoreException
 
 
 def make_middleware() -> List[Middleware]:

@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from api.v1 import router as v1_router
-from api.handlers import error_handler
-from api.models import ErrorBase
+from app.api.v1 import router as v1_router
+from app.api.handlers import error_handler
+from app.api.models import ErrorBase
 
 
 router = APIRouter(responses={401: {"model": ErrorBase}})

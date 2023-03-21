@@ -9,9 +9,10 @@ class Settings(BaseSettings):
     auth_token: str
     data_dir: str = "data"
     file_chunk_size: int = 1024 * 1024  # 1 MB
-    max_file_size: int = 1024 * 1024 * 5  # 25 MB
+    max_file_size: int = 1024 * 1024 * 25  # 25 MB
     max_filename_length: int = 255
-    root_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    app_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    root_dir: str = os.path.dirname(app_dir)
 
 
 # TODO: Add logging configuration

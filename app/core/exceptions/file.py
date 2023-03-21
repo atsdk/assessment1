@@ -1,4 +1,4 @@
-from core.exceptions.base import CoreException
+from app.core.exceptions.base import CoreException
 
 
 class FileException(CoreException):

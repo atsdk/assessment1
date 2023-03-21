@@ -1,9 +1,9 @@
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
-from core.exceptions import CoreException
+from app.core.exceptions import CoreException
 
-from api.errors import ERRORS
+from app.api.errors import ERRORS
 
 
 def error_handler(_: Request, error: CoreException) -> Response:

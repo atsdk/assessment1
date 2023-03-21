@@ -4,17 +4,17 @@ import shutil
 from fastapi import APIRouter, UploadFile
 from fastapi.responses import JSONResponse
 
-from core import settings
-from core.exceptions.file import FileProcessingException
+from app.core import settings
+from app.core.exceptions.file import FileProcessingException
 
-from api.models import ErrorBase, FileResponseBase
-from api.utils import get_data_file_destination, validate_file
+from app.api.models import ErrorBase, FileResponseBase
+from app.api.utils import get_data_file_destination, validate_file
 
 router = APIRouter(responses={400: {"model": ErrorBase}})
 logger = logging.getLogger(__name__)
 
 
-@router.post("/patient-data/", status_code=201, response_model=FileResponseBase)
+@router.post("/patient-data/", response_model=FileResponseBase)
 def patient_data(file: UploadFile) -> JSONResponse:
     """Receives, validates and uploads patient data file to the server."""
     validate_file(file, ["json"])

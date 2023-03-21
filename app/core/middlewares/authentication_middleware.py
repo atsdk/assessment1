@@ -9,7 +9,7 @@ from starlette.middleware.base import (
 )
 from starlette.responses import JSONResponse, Response
 
-from core.settings import settings
+from app.core.settings import settings
 
 
 class AuthenticationMiddleware(BaseHTTPMiddleware):

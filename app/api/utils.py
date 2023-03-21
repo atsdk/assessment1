@@ -5,8 +5,8 @@ import os
 
 from typing import TYPE_CHECKING, List, Optional
 
-from core import settings
-from core.exceptions.file import (
+from app.core import settings
+from app.core.exceptions.file import (
     InvalidFileExtensionException,
     InvalidFilenameLengthException,
     InvalidFileSizeException,
@@ -34,7 +34,6 @@ def validate_file(
     if extension := file.filename.split(".")[-1] not in allowed_content_types:
         logger.error(
             "File %s has invalid extension %s", file.filename, extension,
-            exc_info=True
         )
         raise InvalidFileExtensionException()
     if file.size > settings.max_file_size:
@@ -43,7 +42,6 @@ def validate_file(
             file.filename,
             file.size,
             settings.max_file_size,
-            exc_info=True,
         )
         raise InvalidFileSizeException()
     if not settings.max_filename_length > len(file.filename) > 0:
@@ -52,7 +50,6 @@ def validate_file(
             file.filename,
             len(file.filename),
             settings.max_filename_length,
-            exc_info=True,
         )
         raise InvalidFilenameLengthException()
     # TODO: Add more validations
