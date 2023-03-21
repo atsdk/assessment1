@@ -1,33 +1,25 @@
+# TODO: move it out of business logic
+# because it contains details (database model)
 from datetime import datetime
-from sqlalchemy import create_engine, Column, String, DateTime, JSON
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, DateTime
+from sqlalchemy.dialects.postgresql import JSONB
 
-from app.core import settings
-
-engine = create_engine(
-    settings.database_uri,
-    convert_unicode=True,
-    **settings.database_connect_options
-)
-db_session = scoped_session(
-    sessionmaker(autocommit=False, autoflush=False, bind=engine)
-)
-
-
-def init_db():
-    Model.metadata.create_all(bind=engine)
-
-
-Model = declarative_base(name="Model")
-Model.query = db_session.query_property()
+from app.database import Model
 
 
 class FHIRModel(Model):
+    """This is not actualy needed in this case. We can use raw SQL inserts.
+    But:
+    1) It is better protected against SQL injections.
+    2) It is a convenient way to init database.
+    3) Provides flexibility to use some of this models inside the app later.
+    """
     __abstract__ = True
-    id = Column("id", String, primary_key=True)
-    created = Column(DateTime, default=datetime.utcnow)
-    resource = Column(JSON)
+    id = Column(String, primary_key=True)
+    created = Column(DateTime, default=datetime.utcnow, nullable=False)
+    resource = Column(JSONB)
+    # If we every will want to use this models in the app
+    # better to use sqlalchemy-json, so we are able to change fields inplace
 
 
 class AllergyIntolerance(FHIRModel):

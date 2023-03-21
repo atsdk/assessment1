@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     max_filename_length: int = 255
     app_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     root_dir: str = os.path.dirname(app_dir)
+    # And also for the ease of use we use the same settings obj for everything
+    database_uri: str
 
 
 # TODO: Add logging configuration
