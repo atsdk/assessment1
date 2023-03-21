@@ -1,0 +1,30 @@
+from app.core.services.fhir.models import (
+    AllergyIntolerance, CarePlan, CareTeam, Claim, Condition, Device,
+    DiagnosticReport, DocumentReference, Encounter, ExplanationOfBenefit,
+    ImagingStudy, Immunization, Medication, MedicationAdministration,
+    MedicationRequest, Observation, Patient, Procedure, Provenance,
+    SupplyDelivery,
+)
+
+MAPPING = {
+    "AllergyIntolerance": AllergyIntolerance,
+    "CarePlan": CarePlan,
+    "CareTeam": CareTeam,
+    "Claim": Claim,
+    "Condition": Condition,
+    "Device": Device,
+    "DiagnosticReport": DiagnosticReport,
+    "DocumentReference": DocumentReference,
+    "Encounter": Encounter,
+    "ExplanationOfBenefit": ExplanationOfBenefit,
+    "ImagingStudy": ImagingStudy,
+    "Immunization": Immunization,
+    "Medication": Medication,
+    "MedicationAdministration": MedicationAdministration,
+    "MedicationRequest": MedicationRequest,
+    "Observation": Observation,
+    "Patient": Patient,
+    "Procedure": Procedure,
+    "Provenance": Provenance,
+    "SupplyDelivery": SupplyDelivery,
+}
