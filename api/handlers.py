@@ -6,12 +6,15 @@ from core.exceptions import CoreException
 from api.errors import ERRORS
 
 
-def error_handler(request: Request, error: CoreException) -> Response:
+def error_handler(_: Request, error: CoreException) -> Response:
     """Handle error"""
-    return ERRORS.get(
+    error = ERRORS.get(
         error.__class__,
-        JSONResponse(
+        dict(
             status_code=500,
             content={"error": "Unknown exception"}
         )
+    )
+    return JSONResponse(
+        status_code=error["status_code"], content=error["content"]
     )
