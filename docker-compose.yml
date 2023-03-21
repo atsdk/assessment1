@@ -1,0 +1,42 @@
+version: '3.4'
+
+x-app-volume:
+  &app
+  type: bind
+  source: ./app/
+  target: /code/app/
+  consistency: cached
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: $PWD/containers/app/Dockerfile.dev
+    image: &app_image app
+    volumes:
+      - *app
+      - $PWD/data:/code/data
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - $PWD/containers/app/.env
+
+  postgres:
+    image: postgres:15.2
+    ports:
+      - "5432:5432"
+    env_file:
+      - $PWD/containers/postgres/.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgresql-database:/var/lib/postgresql/data:delegated
+
+
+volumes:
+  postgresql-database:
+    name: postgresql-database
