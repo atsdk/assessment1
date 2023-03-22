@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 def _save_file_to_db_easy_way(session: Session, path: str) -> None:
     """Parse the file and save FHIR resources to the database."""
     with open(path, "rb") as f:
+        # Add check whether it's bundle or a resource
+        # and treat it accordingly
         for entry in ijson.items(f, "entry.item", use_float=True):
             resource_type = entry["resource"]["resourceType"]
             if not (model := MAPPING.get(resource_type)):
