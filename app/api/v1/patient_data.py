@@ -30,6 +30,9 @@ def patient_data(file: UploadFile) -> JSONResponse:
         )
         raise FileProcessingException from e
 
+    from app.background_tasks.worker import migrate_data_files_from_fhir_to_sql
+    migrate_data_files_from_fhir_to_sql.delay()
+
     return JSONResponse(
         status_code=200,
         content={

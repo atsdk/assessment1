@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     root_dir: str = os.path.dirname(app_dir)
     # And also for the ease of use we use the same settings obj for everything
     database_uri: str
+    celery_broker_uri: str
 
 
 # TODO: Add logging configuration
