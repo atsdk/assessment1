@@ -1,7 +1,7 @@
 # TODO: move it out of business logic
 # because it contains details (database model)
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, Index, text as sqlalchemy_text
 from sqlalchemy.dialects.postgresql import JSONB
 
 from app.database import Model
@@ -36,6 +36,15 @@ class CareTeam(FHIRModel):
 
 class Claim(FHIRModel):
     __tablename__ = "claim"
+    __table_args__ = (
+        Index(
+            'claim_insurancetype_idx',
+            sqlalchemy_text(
+                "(resource#>'{insurance,0,coverage,display}') jsonb_path_ops"
+            ),
+            postgresql_using="gin",
+        ),
+    )
 
 
 class Condition(FHIRModel):
