@@ -1,10 +1,16 @@
 # TODO: move it out of business logic
 # because it contains details (database model)
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Index, text as sqlalchemy_text
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy import (
+    BigInteger, Column, String, DateTime, Enum, ForeignKey, Index,
+    text as sqlalchemy_text,
+)
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.orm import relationship
 
 from app.database import Model
+
+from app.core.services.fhir.enums import AllergyIntoleranceCriticality
 
 
 class FHIRModel(Model):
@@ -14,8 +20,9 @@ class FHIRModel(Model):
     2) It is a convenient way to init database.
     3) Provides flexibility to use some of this models inside the app later.
     """
+
     __abstract__ = True
-    id = Column(String, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True)
     created = Column(DateTime, default=datetime.utcnow, nullable=False)
     resource = Column(JSONB)
     # If we every will want to use this models in the app
@@ -38,7 +45,7 @@ class Claim(FHIRModel):
     __tablename__ = "claim"
     __table_args__ = (
         Index(
-            'claim_insurancetype_idx',
+            "claim_insurancetype_idx",
             sqlalchemy_text(
                 "(resource#>'{insurance,0,coverage,display}') jsonb_path_ops"
             ),
@@ -109,3 +116,24 @@ class Provenance(FHIRModel):
 
 class SupplyDelivery(FHIRModel):
     __tablename__ = "supply_delivery"
+
+
+# Some examples on relational way to store data,
+# full example would take a lot of time because of the complexity of the data
+class Allergy(Model):
+    __tablename__ = "allergy"
+
+    code = Column(BigInteger, primary_key=True)
+    display = Column(String(100), nullable=False)
+    # might add system or system relationship
+
+
+class PatientAllergyIntolerance(FHIRModel):
+    __tablename__ = "patient_allergy_intolerance"
+
+    criticality = Column(Enum(AllergyIntoleranceCriticality))
+    # Add a foreign key to Alergy table
+    allergy = relationship("Allergy", backref="AllergyIntolerances")
+    allergy_code = Column(BigInteger, ForeignKey("allergy.code"))
+    patient = relationship("Patient", backref="AllergyIntolerances")
+    patient_id = Column(UUID(as_uuid=True), ForeignKey("patient.id"))
