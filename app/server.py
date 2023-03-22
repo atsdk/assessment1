@@ -5,9 +5,12 @@ from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import error_handler, router
-from app.database import init_db
+from app.database import Model, engine
 from app.core.middlewares import AuthenticationMiddleware
 from app.core.exceptions import CoreException
+# Just a workaround for create_all() to work
+# will definitely not use in the real app
+from app.core.services.fhir.models import *
 
 
 def make_middleware() -> List[Middleware]:
@@ -32,6 +35,12 @@ def make_exception_handlers() -> Dict[Exception, Callable]:
     return {
         CoreException: error_handler,
     }
+
+
+def init_db():
+    """Initialize the database."""
+    # TODO: move to alembic
+    Model.metadata.create_all(bind=engine)
 
 
 def create_app() -> FastAPI:

@@ -11,11 +11,5 @@ db_session = scoped_session(
 )
 
 
-def init_db():
-    """Initialize the database."""
-    # TODO: move to alembic
-    Model.metadata.create_all(bind=engine)
-
-
 Model = declarative_base(name="Model")
 Model.query = db_session.query_property()
