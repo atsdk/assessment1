@@ -132,7 +132,6 @@ class PatientAllergyIntolerance(FHIRModel):
     __tablename__ = "patient_allergy_intolerance"
 
     criticality = Column(Enum(AllergyIntoleranceCriticality))
-    # Add a foreign key to Alergy table
     allergy = relationship("Allergy", backref="AllergyIntolerances")
     allergy_code = Column(BigInteger, ForeignKey("allergy.code"))
     patient = relationship("Patient", backref="AllergyIntolerances")
