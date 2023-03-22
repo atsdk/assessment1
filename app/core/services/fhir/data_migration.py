@@ -81,6 +81,7 @@ def _migrate_small_file_simple_model(session: Session, path: str) -> None:
     for model, objects in result.items():
         for each in model.query.filter(model.id.in_(objects.keys())):
             session.merge(objects.pop(str(each.id)))
+    session.flush()
     # Bulk insert new objects
     all_objects = []
     for obj in result.values():
