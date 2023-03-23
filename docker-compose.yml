@@ -52,22 +52,19 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.7.12-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=mypass
     ports:
       - "5673:5672"
       - "15672:15672"
     volumes:
       - rabbitmq:/var/lib/rabbitmq
+    env_file:
+      - $PWD/containers/rabbitmq/.env
 
   celery_worker:
     image: *app_image
     restart: always
     environment:
       - C_FORCE_ROOT=true
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=mypass
     depends_on:
       - "rabbitmq"
       - "postgres"
@@ -76,6 +73,7 @@ services:
       - *data
     env_file:
       - $PWD/containers/app/.env
+      - $PWD/containers/rabbitmq/.env
     command: celery -A app.background_tasks.worker.celery_app worker -l info --concurrency=4
 
 volumes:
