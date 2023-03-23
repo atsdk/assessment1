@@ -6,11 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import error_handler, router
 from app.background_tasks.models import *
-# from app.background_tasks.worker import create_celery
 from app.core.middlewares import AuthenticationMiddleware
 from app.core.exceptions import CoreException
-# Just a workaround for create_all() to work
-# will definitely not use in the real app
 from app.core.services.fhir.models import *
 from app.database import Model, engine
 
@@ -41,7 +38,7 @@ def make_exception_handlers() -> Dict[Exception, Callable]:
 
 def init_db():
     """Initialize the database."""
-    # TODO: move to alembic
+    # TODO: use alembic
     Model.metadata.create_all(bind=engine)
 
 
@@ -59,11 +56,9 @@ def create_app() -> FastAPI:
         middleware=make_middleware(),
         exception_handlers=make_exception_handlers(),
     )
-    # app_.celery_app = create_celery()
     app_.include_router(router)
     init_db()
     return app_
 
 
 app = create_app()
-# celery = app.celery_app
