@@ -25,7 +25,7 @@ class FHIRModel(Model):
     id = Column(UUID(as_uuid=True), primary_key=True)
     created = Column(DateTime, default=datetime.utcnow, nullable=False)
     resource = Column(JSONB)
-    # If we every will want to use this models in the app
+    # If we ever will want to use this models in the app
     # better to use sqlalchemy-json, so we are able to change fields inplace
 
 
@@ -120,12 +120,16 @@ class SupplyDelivery(FHIRModel):
 
 # Some examples on relational way to store data,
 # full example would take a lot of time because of the complexity of the data
+#
+# This example shows, that we can pull any field we would query a lot
+# out of the JSONB field and store it in a separate field
+# connecting it to other tables via foreign keys
+#
 class Allergy(Model):
     __tablename__ = "allergy"
 
     code = Column(BigInteger, primary_key=True)
     display = Column(String(100), nullable=False)
-    # might add system or system relationship
 
 
 class PatientAllergyIntolerance(FHIRModel):
