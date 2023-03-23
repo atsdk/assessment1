@@ -68,7 +68,7 @@ def _migrate_small_file_simple_model(session: Session, path: str) -> None:
     """Read the whole file into memory and save the resources
     to the database in chunks
     """
-    result = defaultdict()
+    result = defaultdict(dict)
 
     with open(path, "rb") as file:
         data = orjson.loads(file.read())
@@ -79,9 +79,8 @@ def _migrate_small_file_simple_model(session: Session, path: str) -> None:
             result[model][entry["resource"]["id"]] = obj
     # Upsert already existing objects
     for model, objects in result.items():
-        for each in model.query.filter(model.id.in_(objects.keys())):
+        for each in session.query(model).filter(model.id.in_(objects.keys())):
             session.merge(objects.pop(str(each.id)))
-    session.flush()
     # Bulk insert new objects
     all_objects = []
     for obj in result.values():
