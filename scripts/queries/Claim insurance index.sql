@@ -1,0 +1,1 @@
+SELECT * FROM claim WHERE resource#>>'{provider,display}' = 'NEW ENGLAND BAPTIST HOSPITAL';
