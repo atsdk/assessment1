@@ -5,7 +5,6 @@ from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import error_handler, router
-from app.background_tasks.models import *
 from app.core.middlewares import AuthenticationMiddleware
 from app.core.exceptions import CoreException
 from app.core.services.fhir.models import *
