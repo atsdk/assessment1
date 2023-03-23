@@ -32,8 +32,6 @@ def patient_data(file: UploadFile) -> JSONResponse:
         raise FileProcessingException from e
 
     # Calling the background task to migrate the file from FHIR to SQL
-    # actually better be done with some background task scheduler
-    # once in a while
     migrate_file_from_fhir_to_sql.delay(destination_file_path)
 
     return JSONResponse(

@@ -10,10 +10,7 @@ def error_handler(_: Request, error: CoreException) -> Response:
     """Handle error"""
     error = ERRORS.get(
         error.__class__,
-        dict(
-            status_code=500,
-            content={"error": "Unknown exception"}
-        )
+        {"status_code": 500, "content": {"error": "Unknown exception"}}
     )
     return JSONResponse(
         status_code=error["status_code"], content=error["content"]

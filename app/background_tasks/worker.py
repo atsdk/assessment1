@@ -1,4 +1,8 @@
+from __future__ import annotations
+
 import logging
+
+from typing import TYPE_CHECKING
 
 from celery import current_app as current_celery_app
 from celery import Task
@@ -10,6 +14,9 @@ from app.core.services.fhir.data_migration import (
 )
 from app.database import session
 
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
+
 celery_app = current_celery_app
 celery_app.conf.update(broker_url=settings.celery_broker_uri)
 
@@ -17,21 +24,20 @@ logger = logging.getLogger(__name__)
 
 
 class DBTask(Task):
+    """Task class that provides a session management for the task.
+    """
     _session = None
 
-    def after_return(self, *args, **kwargs):
+    def after_return(self, *args, **kwargs) -> None:
         if self._session is not None:
             self._session.remove()
 
     @property
-    def session(self):
+    def session(self) -> Session:
         if self._session is None:
             self._session = session
 
         return self._session
-
-# To be honest, I cannot register this task outside of this file
-# so be it for now
 
 
 @celery_app.task(bind=True, base=DBTask)
@@ -44,6 +50,3 @@ def migrate_file_from_fhir_to_sql(self, path: str) -> None:
             "File %s processing error: %s", path, e,
             exc_info=True
         )
-
-
-# Should add scheduled task to migrate all files in the directory
