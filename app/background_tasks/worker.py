@@ -12,10 +12,10 @@ from app.core.services.fhir.data_migration import (
     save_file_to_db_only_complex_model,
     save_file_to_db_simple_model,
 )
-from app.database import session
+from app.database import Session
 
 if TYPE_CHECKING:
-    from sqlalchemy.orm import Session
+    from sqlalchemy.orm import Session as SessionType
 
 celery_app = current_celery_app
 celery_app.conf.update(broker_url=settings.celery_broker_uri)
@@ -33,9 +33,9 @@ class DBTask(Task):
             self._session.remove()
 
     @property
-    def session(self) -> Session:
+    def session(self) -> SessionType:
         if self._session is None:
-            self._session = session
+            self._session = Session
 
         return self._session
 
