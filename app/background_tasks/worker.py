@@ -42,6 +42,7 @@ class DBTask(Task):
 
 @celery_app.task(bind=True, base=DBTask)
 def migrate_file_from_fhir_to_sql(self, path: str) -> None:
+    """Background task that migrates the file by path from FHIR to SQL."""
     try:
         save_file_to_db_simple_model(self.session, path)
         save_file_to_db_only_complex_model(self.session, path)
@@ -50,3 +51,8 @@ def migrate_file_from_fhir_to_sql(self, path: str) -> None:
             "File %s processing error: %s", path, e,
             exc_info=True
         )
+
+# TODO: Add a task that will be called by the celery beat,
+# will iterate through the files in the directory,
+# check the file against some special data migration table
+# and will call the task above for each file

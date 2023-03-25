@@ -6,8 +6,8 @@ import os
 from collections import defaultdict
 from typing import TYPE_CHECKING
 # Use ijson in order to parse the file in a memory-efficient way
-# might be useful for large files
 import ijson
+# Use orjson in order to parse the file faster
 import orjson
 
 from app.core.services.fhir.factory import get_model, get_migrator
