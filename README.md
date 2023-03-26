@@ -26,9 +26,13 @@ out of JSONB to separate fields.
 
 `docker-compose up -d`
 
-## How to test
+## Manual testing
 
 `python3 upload_all_files.py --folder /path/to/folder/with/data_files.json`
+
+## Unit testing
+
+`docker-compose exec app pytest app/tests`
 
 ### Other notes
 
